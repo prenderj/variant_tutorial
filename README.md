@@ -135,3 +135,37 @@ GenomeAnalysisTK -T ApplyRecalibration \
     -o variants_VQSR.vcf
 ```
 Congratulations. You have now called a set of variants from your bam file.
+
+# Session 2: Variant annotation and filtering
+## Dataset
+We will use the variants_VQSR.vcf from the previous session.
+
+Programs required:
+*	VEP (www.ensembl.org/vep)
+*	VCFtools (https://broadinstitute.github.io/picard/)
+
+These are already installed on the cluster. To make them available type:
+```
+module load vep/87
+module load vcftools/0.1.14
+```
+##8. 8.	Variant annotation with VEP
+To run VEP we specify the location of the VEP local cache that has been installed at /export/data/bio/vep/. By specifying the --merged flag we can get annotations for Ensembl and RefSeq genes.
+```
+variant_effect_predictor.pl --cache \
+ --dir_cache /export/data/bio/vep/ --species bos_taurus \
+ --vcf -i variants_VQSR.vcf -o variants_VEP.vcf --merged
+```
+Have a look at the html output file.
+
+**_Question 4: How many missense variants were identified?_**
+
+**_Question 5. Have a look at the manual page (http://www.ensembl.org/info/docs/tools/vep/script/vep_options.html) and work out how to add SIFT scores to the output vcf. You may need to delete the previous output file if using the same name. What proportion of the missense variants are predicted to be deleterious with higher confidence?_**
+
+##9. Variant filtering with VEP
+Use the filter_vep.pl script to just extract the missense variants from the VEP annotated file.
+```
+filter_vep.pl -I variants_VEP.vcf -format vcf -o missense_only.vcf \
+ -filter “Consequence matches missense”
+```
+**_Question 6: Get a count of the number of coding variants in the RBM28 gene (hint take a look here http://www.ensembl.org/info/docs/tools/vep/script/vep_filter.html)_**
