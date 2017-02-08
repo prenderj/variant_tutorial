@@ -169,3 +169,16 @@ filter_vep.pl -I variants_VEP.vcf -format vcf -o missense_only.vcf \
  -filter “Consequence matches missense”
 ```
 **_Question 6: Get a count of the number of coding variants in the RBM28 gene (hint take a look here http://www.ensembl.org/info/docs/tools/vep/script/vep_filter.html)_**
+
+##10. Variant filtering and metrics with VCFtools
+Use VCFtools to get the allele frequency of each variant:
+```
+vcftools --vcf variants_VEP.vcf --freq --out freqs
+```
+To get counts of each type of change e.g. (A<->C) and the total number of transitions and transversions
+```
+vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
+```
+**_Question 7: Which base changes (e.g. A<->C, A<->G etc) are observed most often in this data? Why might these be most common hint: https://en.wikipedia.org/wiki/Deamination)_**
+
+**_Question 8: How can you output a new vcf file with only the genotypes for the first cow with ID 2637?_** 
