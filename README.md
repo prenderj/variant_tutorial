@@ -81,7 +81,7 @@ GenomeAnalysisTK -T HaplotypeCaller \
  --emitRefConfidence GVCF --dbsnp vcf_chr_4.vcf \
  -o cow1.g.vcf
 ```
-**IMPORTANT. The steps 2-5 above would normally be run for each of your samples to generate one g.vcf file per sample. However to save time we have prepared the g.vcf files for the remaining sample for use with the next step.**
+**IMPORTANT. The steps 2-5 above would normally be run for each of your samples to generate one g.vcf file per sample. However to save time we have prepared the g.vcf file for the remaining sample for use with the next step.**
 ## 6. Raw variant calls
 Run GenotypeGVCFs over the 11 g.vcf files to get a list of raw (unfiltered) variants. Each of the separate g.vcf files is specified with the --variant flag.
 ```
@@ -134,3 +134,4 @@ GenomeAnalysisTK -T ApplyRecalibration \
     -tranchesFile recalibrate_SNP.tranches \
     -o variants_VQSR.vcf
 ```
+Congratulations. You have now called a set of variants from your bam file.
