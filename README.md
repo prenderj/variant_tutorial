@@ -142,7 +142,7 @@ We will use the variants_VQSR.vcf from the previous session.
 
 Programs required:
 *	VEP (www.ensembl.org/vep)
-*	VCFtools (https://broadinstitute.github.io/picard/)
+*	VCFtools (https://vcftools.github.io/index.html)
 
 These are already installed on the cluster. To make them available type:
 ```
