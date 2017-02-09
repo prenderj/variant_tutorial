@@ -162,6 +162,13 @@ Have a look at the html output file.
 
 **_Question 5. Have a look at the manual page (http://www.ensembl.org/info/docs/tools/vep/script/vep_options.html) and work out how to add SIFT scores to the output vcf. You may need to delete the previous output file if using the same name. What proportion of the missense variants are predicted to be deleterious with higher confidence?_**
 
+Ensembl also has a REST API. This allows variant annotation to be incorporated into your own programs/scripts. You can also use this to quickly get the annotation of individual variants on the command line:
+```
+wget -q --header='Content-type:application/json' 'https://rest.ensembl.org/vep/cow/region/4:94947404-94947404:1/A?' -O -
+```
+This returns the consequence of a change to an A allele at position 4:94947404 in the cow genome. If you specify a filename after the -O parameter the results, in json format, will be output to this file. Specifying "-" on the other hand leads the results to simply be printed to screen. 
+
+
 ##9. Variant filtering with VEP
 Use the filter_vep.pl script to just extract the missense variants from the VEP annotated file.
 ```
@@ -169,12 +176,6 @@ filter_vep.pl -I variants_VEP.vcf -format vcf -o missense_only.vcf \
  -filter “Consequence matches missense”
 ```
 **_Question 6: Get a count of the number of coding variants in the RBM28 gene (hint take a look here http://www.ensembl.org/info/docs/tools/vep/script/vep_filter.html)_**
-
-Ensembl also has a REST API. This allows variant annotation to be incorporated into your own programs/scripts. You can also use this to quickly get the annotation of individual variants on the command line:
-```
-wget -q --header='Content-type:application/json' 'https://rest.ensembl.org/vep/cow/region/4:94947404-94947404:1/A?' -O -
-```
-This returns the consequence of a change to an A allele at position 4:94947404 in the cow genome. If you specify a filename after the -O parameter the results, in json format, will be output to this file. Specifying "-" on the other hand leads the results to simply be printed to screen. 
 
 ##10. Variant filtering and metrics with VCFtools
 Use VCFtools to get the allele frequency of each variant:
