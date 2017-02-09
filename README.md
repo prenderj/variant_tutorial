@@ -1,7 +1,7 @@
 # Session 1: Variant calling with GATK
 
 ## Dataset
-This tutorial will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files (aligned with BWA), each corresponding to a different cow. These contain all the reads mapping to an approximately 4Mb region centred around the cow Leptin gene on chromosome 4.
+This tutorial will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files (aligned with BWA), each corresponding to a different cow. These contain all the reads mapping to an approximately 4Mb region centred around the cow Leptin gene on chromosome 4 (you can view the region here: http://www.ensembl.org/Bos_taurus/Location/Overview?r=4%3A91249874-95266624).
 
 Programs required:
 *	R (https://cran.r-project.org/)
