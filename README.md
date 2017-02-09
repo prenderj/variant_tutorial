@@ -179,6 +179,6 @@ To get counts of each type of change e.g. (A<->C) and the total number of transi
 ```
 vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 ```
-**_Question 7: Which base changes (e.g. A<->C, A<->G etc) are observed most often in this data? Why might these be most common hint: https://en.wikipedia.org/wiki/Deamination)_**
+**_Question 7: Which base changes (e.g. A<->C, A<->G etc) are observed most often in this data? Why might these be most common (hint: https://en.wikipedia.org/wiki/Deamination)_**
 
-**_Question 8: How can you output a new vcf file with only the genotypes for the first cow with ID 2637?_** 
+**_Question 8: How can you output a new vcf file with only the genotypes for the first cow with ID 2637 (https://vcftools.github.io/man_latest.html)?_** 
