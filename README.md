@@ -83,7 +83,7 @@ GenomeAnalysisTK -T HaplotypeCaller \
 ```
 **IMPORTANT. The steps 2-5 above would normally be run for each of your samples to generate one g.vcf file per sample. However to save time we have prepared the g.vcf file for the remaining sample for use with the next step.**
 ## 6. Raw variant calls
-Run GenotypeGVCFs over the 11 g.vcf files to get a list of raw (unfiltered) variants. Each of the separate g.vcf files is specified with the --variant flag.
+Run GenotypeGVCFs over the 2 g.vcf files to get a list of raw (unfiltered) variants. Each of the separate g.vcf files is specified with the --variant flag.
 ```
 GenomeAnalysisTK -T GenotypeGVCFs \
  -R Bos_taurus.UMD3.1.dna.toplevel.fa \
