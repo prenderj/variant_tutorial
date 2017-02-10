@@ -1,3 +1,11 @@
+# Table of contents
+
+[Session 1: Variant calling with GATK](https://github.com/prenderj/variant_tutorial#session-1-variant-calling-with-gatk)
+
+[Session 2: Variant annotation and filtering](https://github.com/prenderj/variant_tutorial#session-2-variant-annotation-and-filtering)
+
+[Session 3: Association study with plink](https://github.com/prenderj/variant_tutorial#session-3-association-study-with-plink)
+
 # Session 1: Variant calling with GATK
 
 ## Dataset
