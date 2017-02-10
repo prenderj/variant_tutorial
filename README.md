@@ -203,29 +203,34 @@ To load them type:
 module load plink/1.9
 module load R/3.3.2
 ```
+##11. Converting VCF to plinks binary format
 Although plink can read VCF files, downstream analyses will be quicker if we first convert the data to plinks binary format. For this tutorial we will also restrict the analysis to just British and Kenyan individuals in this cohort and variants with a minor allele frequency of at least 5%. We also exclude genotypes with a quality score less than 40 to make sure low quality genotypes do not affect our analyses.
 ```
 plink --biallelic-only strict --vcf-min-gq 40 --pheno integrated_call_samples_v2.20130502.ALL.ped --vcf ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz --keep GBR_LWK_ids.txt --maf 0.05 --make-bed --out plinkFormatted
 ```
+##12. Summary statistics with plink 
 Like VCFtools plink can generate various summary statistics on the data. For example to get the allele frequency of each variant you can type:
 ```
 plink --bfile plinkFormatted --freq
 ```
 This reads in the binary files we generated with the previous command and outputs the frequencies of each variant. As we did not specify an output file the results file got given the default name, plink.frq.
 
-**_Question 9: A common filter in GWAS is excluding variants that show substantial deviation from Hardy-Weinberg equilibrium (https://en.wikipedia.org/wiki/Hardy%E2%80%93Weinberg_principle). Have a look at the plink manual (https://www.cog-genomics.org/plink2/) and work out how to get a HWE p value for every variant.
-
+**_Question 9: A common filter in GWAS is excluding variants that show substantial deviation from Hardy-Weinberg equilibrium (https://en.wikipedia.org/wiki/Hardy%E2%80%93Weinberg_principle). Have a look at the plink manual (https://www.cog-genomics.org/plink2/) and work out how to get a HWE p value for every variant._**
+##13. Studying population stratification
 A good place to start in most association studies is to check for population stratification in your data. As discussed population stratification can skew your analyses if not properly accounted for.
 With large datasets you often want to prune your variants down to a subset that are largely in linkage equilibrium. This reduces redundancy as well as making the data more manageable. To do this in plink:
 ```
 plink --bfile plinkFormatted --indep-pairwise 500 50 0.2
 ```
-The first parameter specifies the window size (in KB) within which pruning occurs and the second the step size by which the windows are slided by. The final paramater specifies the level of LD at which pruning is carried out. The lower this value the more stringent the pruning.
+The first parameter specifies the window size (in KB) within which pruning occurs and the second the step size by which the windows are slided by. The final parameter specifies the level of LD (r squared value) at which pruning is carried out. The lower this value the more stringent the pruning.
 This command outputs a list of pruned variants. To generate new binary files just containing these variants type:
 ```
 plink --bfile plinkFormatted --extract plink.prune.in --make-bed --out plinkFormatted_pruned
 ```
-INSERT PCA CODE
+We can then use this pruned dataset with the pca function in plink to get principle components:
+```
+plink --bfile plinkFormatted --pca
+```
 We can examine the PCA results in R. For example we can plot the first two principal components using the following R code (the British samples are in rows 1 to 91 and the Kenyan samples in rows 92 to 190)
 ```{r}
 dat<-read.table("plink.eigenvec", header=F)
@@ -236,4 +241,4 @@ points(dat[92:190,3], dat[92:190,4],col="red")
 legend("topright", c("British", "Kenyan"), col=c("blue", "red"), pch=1)
 dev.off()
 ```
-This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (of the 20 we generated), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together, but rather performed on each group separately and results grouped together in downstream metaanalyses.
+This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (found in columns 3 and 4), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together, but rather performed on each group separately and results grouped together in downstream metaanalyses.
