@@ -189,3 +189,16 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 **_Question 7: Which base changes (e.g. A<->C, A<->G etc) are observed most often in this data? Why might these be most common (hint: https://en.wikipedia.org/wiki/Deamination)_**
 
 **_Question 8: How can you output a new vcf file with only the genotypes for the first cow with ID 2637 (https://vcftools.github.io/man_latest.html)?_** 
+
+# Session 3: Association study with plink
+## Dataset
+In this session we will use human data from the 1000 genomes dataset. The file we are using contains genotypes for approximately 2500 individuals from 26 different globabl populations. The file was originally downloaded from the 1000 genome ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
+
+Programs required:
+*	Plink (https://www.cog-genomics.org/plink2/)
+
+These are already installed on the cluster. To make them available type:
+```
+module load plink/1.9
+```
+
