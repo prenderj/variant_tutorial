@@ -206,7 +206,7 @@ module load R/3.3.2
 ##11. Converting VCF to plinks binary format
 Although plink can read VCF files, downstream analyses will be quicker if we first convert the data to plinks binary format. For this tutorial we will also restrict the analysis to just British and Kenyan individuals in this cohort and variants with a minor allele frequency of at least 5%. We also exclude genotypes with a quality score less than 40 to make sure low quality genotypes do not affect our analyses.
 ```
-plink --biallelic-only strict --vcf-min-gq 40 --pheno integrated_call_samples_v2.20130502.ALL.ped --vcf ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz --keep GBR_LWK_ids.txt --maf 0.05 --make-bed --out plinkFormatted
+plink --biallelic-only strict --vcf-min-gq 40 --pheno 1kg.ped --mpheno 4 --vcf ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz --keep GBR_LWK_ids.txt --maf 0.05 --make-bed --out plinkFormatted --update-sex 1kg.ped 3
 ```
 ##12. Summary statistics with plink 
 Like VCFtools plink can generate various summary statistics on the data. For example to get the allele frequency of each variant you can type:
@@ -241,4 +241,21 @@ points(dat[92:190,3], dat[92:190,4],col="red")
 legend("topright", c("British", "Kenyan"), col=c("blue", "red"), pch=1)
 dev.off()
 ```
-This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (found in columns 3 and 4), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together, but rather performed on each group separately and results grouped together in downstream metaanalyses.
+This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (found in columns 3 and 4), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together, but rather performed on each group separately and results grouped together in downstream meta-analyses. However in this tutorial we will carry on with both populations together.
+
+##14. Basic association analysis
+To perform a basic case control study in plink:
+```
+plink --bfile plinkFormatted --assoc fisher
+```
+We can then plot these p values along the genome in R:
+```{r}
+dat<-read.table("plink.assoc.fisher", header=T)
+pdf("manhattan1.pdf")
+plot(dat$BP, -log10(dat$P), pch=20, col="grey" , xlab="Position on chr22", ylab="-log10(P)")
+signif<-dat[which(dat$P < 5e-08),]
+points(signif$BP, -log10(signif$P),pch=20, col="red")
+abline(h=7.3, col="red", lty=2)
+dev.off()
+```
+In the plot we have log transformed the p values so that small p values now have larger values on the plot i.e. the higher they are the more significant. Those above the p=5x10-8 significance threshold commonly used in GWAS are indicated in red. As can be seen a lot of sites are apparently significant. This though is how not to do a GWAS. As we have shown this data shows substantial population stratification that will likely be confounding these results. When performing GWAS you control for confounders by fitting what can be termed covariates. These are factors that you think may be important to control for when doing your analysis e.g. diet when looking at the genetics of body weight. Common confounders include sex, age, diet etc as well as population stratification.
