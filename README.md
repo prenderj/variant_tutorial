@@ -95,7 +95,7 @@ Run GenotypeGVCFs over the 2 g.vcf files to get a list of raw (unfiltered) varia
 ```
 GenomeAnalysisTK -T GenotypeGVCFs \
  -R Bos_taurus.UMD3.1.dna.toplevel.fa \
- -L targetRegion.bed -I cow1_recal.bam \
+ -L targetRegion.bed \
  --variant cow1.g.vcf \
  --variant cow2.g.vcf \
  -o variants.vcf
