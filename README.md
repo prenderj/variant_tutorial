@@ -237,11 +237,11 @@ plink --bfile plinkFormatted --extract plink.prune.in --make-bed --out plinkForm
 ```
 We can then use this pruned dataset with the pca function in plink to get principle components:
 ```
-plink --bfile plinkFormatted --pca
+plink --bfile plinkFormatted_pruned --pca header
 ```
 We can examine the PCA results in R. For example we can plot the first two principal components using the following R code (the British samples are in rows 1 to 91 and the Kenyan samples in rows 92 to 190)
 ```{r}
-dat<-read.table("plink.eigenvec", header=F)
+dat<-read.table("plink.eigenvec", header=T)
 pdf("pca.pdf")
 plot(dat[,3], dat[,4], type="n")
 points(dat[1:91,3], dat[1:91,4],col="blue")
@@ -267,3 +267,21 @@ abline(h=7.3, col="red", lty=2)
 dev.off()
 ```
 In the plot we have log transformed the p values so that small p values now have larger values on the plot i.e. the higher they are the more significant. Those above the p=5x10-8 significance threshold commonly used in GWAS are indicated in red. As can be seen a lot of sites are apparently significant. This though is how not to do a GWAS. As we have shown this data shows substantial population stratification that will likely be confounding these results. When performing GWAS you control for confounders by fitting what can be termed covariates. These are factors that you think may be important to control for when doing your analysis e.g. diet when looking at the genetics of body weight. Common confounders include sex, age, diet etc as well as population stratification.
+
+##15. Association analysis with covariates
+Plink allows you to fit covariates when doing an association test. For example, to fit the pca results to correct for population stratification we can do:
+```
+plink --bfile plinkFormatted --covar plink.eigenvec --covar-number 1-20 --logistic sex hide-covar
+```
+We are fitting as covariates the top twenty principal components as well as sex when fitting this additive model. --logistic indicates we are doing a case control study. If the phenotype was a continuous trait, such as height or weight, we could specify --linear instead of --logistic.
+
+**_Question 10: Adapt the R code above to read this new results file and plot the p values. You can see that now nothing exceeds our significance threshold suggesting that the previous significant hits were likely false positives._**
+
+**_Question 11: How does fitting a dominant or recessive model change the results (hint: see https://www.cog-genomics.org/plink2/assoc#linear)?_**
+
+##16. Permutation derived p values
+Permutation derived p values involve randomly shuffling the link between genotypes and phenotypes across samples to see how unusual the observed assocation is. P values derived in this way can be more robust than the nominal p values obtained from the standard tests however they come at the cost of being computationally more expensive to calculate. As an example though we can calculate permutation derived p values across just a small region of the chromosome:
+```
+plink --bfile plinkFormatted --covar plink.eigenvec --covar-number 1-20 --logistic sex perm --chr 22 --from-mb 43.05 --to-mb 43.15
+```
+Congratulations. You now know the basics of how to undertake a GWAS.
