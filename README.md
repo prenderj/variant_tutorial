@@ -200,7 +200,7 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 
 # Session 3: Association study with plink
 ## Dataset
-In this session we will use human data from the 1000 genomes dataset. The file we are using contains genotypes for approximately 2500 individuals from 26 different globabl populations. The file was originally downloaded from the 1000 genome ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
+In this session we will use human data from the 1000 genomes dataset. The file we are using contains genotypes for approximately 2500 individuals from 26 different globabl populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
 
 Programs required:
 *	Plink (https://www.cog-genomics.org/plink2/)
@@ -216,6 +216,8 @@ Although plink can read VCF files, downstream analyses will be quicker if we fir
 ```
 plink --biallelic-only strict --vcf-min-gq 40 --pheno 1kg.ped --mpheno 4 --vcf ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz --keep GBR_LWK_ids.txt --maf 0.05 --make-bed --out plinkFormatted --update-sex 1kg.ped 3
 ```
+As discussed plink requires a ped file containing each samples phenotype individual. Have a look at the 1kg.ped file. To specify the individuals to keep we just provide a list of ids in the GBR_LWK_ids.txt file.
+
 ##12. Summary statistics with plink 
 Like VCFtools plink can generate various summary statistics on the data. For example to get the allele frequency of each variant you can type:
 ```
