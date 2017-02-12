@@ -158,7 +158,7 @@ module load vep/87
 module load vcftools/0.1.14
 ```
 ##8.	Variant annotation with VEP
-To run VEP we specify the location of the VEP local cache that has been installed at /export/data/bio/vep/. By specifying the --merged flag we can get annotations for Ensembl and RefSeq genes.
+To run VEP we specify the location of the VEP local cache that has been installed at /export/data/bio/vep/. This contains information on the location of genes that Ensembl uses to annotate the variants. By specifying the --merged flag we can get annotations for Ensembl and RefSeq genes.
 ```
 variant_effect_predictor.pl --cache \
  --dir_cache /export/data/bio/vep/ --species bos_taurus \
