@@ -279,7 +279,7 @@ abline(h=7.3, col="red", lty=2)
 #plot QQ plot
 #log transform p values and generate expected distribution of p values
 obs <- -log10(sort(dat$P,decreasing=F))
-exp <- -log10(1:length(dat$P)/length(dat$P))
+exp <- -log10(1:length(obs)/length(obs))
 #plot observed versus expected p values
 plot(exp,obs,xlab=expression(Expected~~-log[10](italic(p))), ylab=expression(Observed~~-log[10](italic(p))),
 	xlim=c(0,max(c(obs,exp))),ylim=c(0,max(c(obs,exp))))
