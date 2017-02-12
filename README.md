@@ -243,9 +243,13 @@ plink --bfile plinkFormatted_pruned --pca header
 ```
 We can examine the PCA results in R. For example we can plot the first two principal components using the following R code (the British samples are in rows 1 to 91 and the Kenyan samples in rows 92 to 190)
 ```{r}
+#read in the plink PCA results
 dat<-read.table("plink.eigenvec", header=T)
+#open a pdf file to output graphs to
 pdf("pca.pdf")
-plot(dat[,3], dat[,4], type="n")
+#create an empty plot
+plot(dat[,3], dat[,4], xlab="Principal component 1", ylab="Principal component 2", type="n")
+#plot the two populations separately and add a legend
 points(dat[1:91,3], dat[1:91,4],col="blue")
 points(dat[92:190,3], dat[92:190,4],col="red")
 legend("topright", c("British", "Kenyan"), col=c("blue", "red"), pch=1)
