@@ -300,6 +300,8 @@ We are fitting as covariates the top twenty principal components as well as sex 
 
 **_Question 11: How does fitting a dominant or recessive model change the results (hint: see https://www.cog-genomics.org/plink2/assoc#linear)?_**
 
+**_Question 12: Have a look at the same page and rerun the standard additive analysis (the code above) but with adjusted p values also outputted. What was the smallest UNADJusted p value and what was its corresponding Benjamini-Hochberg False Discovery Rate (FDR_BH)? What does this mean?
+
 ##16. Permutation derived p values
 Permutation derived p values involve randomly shuffling the link between genotypes and phenotypes across samples to see how unusual the observed assocation is. P values derived in this way can be more robust than the nominal p values obtained from the standard tests however they come at the cost of being computationally more expensive to calculate. As an example though we can calculate permutation derived p values across just a small region of the chromosome:
 ```
