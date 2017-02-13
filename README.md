@@ -9,15 +9,15 @@
 # Session 1: Variant calling with GATK
 
 ## Dataset
-This tutorial will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files (aligned with BWA), each corresponding to a different cow. These contain all the reads mapping to an approximately 4Mb region centred around the cow Leptin gene on chromosome 4 (you can view the region here: http://www.ensembl.org/Bos_taurus/Location/Overview?r=4%3A91249874-95266624).
+This session will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files (aligned with BWA), each corresponding to a different cow. These contain reads mapping to an approximately 4Mb region centred on the cow Leptin gene on chromosome 4 (you can view the region here: http://www.ensembl.org/Bos_taurus/Location/Overview?r=4%3A91249874-95266624).
 
 Programs required:
 *	R (https://cran.r-project.org/)
-*	samtools (http://www.htslib.org/doc/samtools.html)
+*	Samtools (http://www.htslib.org/doc/samtools.html)
 * Picard (https://broadinstitute.github.io/picard/)
 *	GATK (https://software.broadinstitute.org/gatk/)
 
-These are already installed on the cluster. To make them available type:
+These are already installed on the ILRI cluster. To make them available type:
 ```
 module load samtools/1.3.1
 module load picard/2.8.2
@@ -26,24 +26,26 @@ module load R/3.3.2
 ```
 
 ## 1. Preparing the reference genome for use with GATK
-Earlier we showed you how to map your reads against a reference genome using BWA. To run GATK it is first necessary to create partner files to the fasta format reference genome you used to do the alignment. We have provided the reference genome used to do these alignments (Bos_taurus.UMD3.1.dna.toplevel.fa). You need to generate two partner files from this; a fasta index file and a sequence dictionary file.
+Earlier we showed you how to map your reads against a reference genome, and these bams were aligned with BWA. To run GATK it is first necessary to create partner files to the fasta format reference genome you used to do the alignment. A fasta index file (.fai) and a dictionary file (.dict). We have provided the reference genome used to align these data (Bos_taurus.UMD3.1.dna.toplevel.fa). The partner files can be generated from this.
+
 Use samtools to generate the fasta index file:
 ```
 samtools faidx Bos_taurus.UMD3.1.dna.toplevel.fa
 ```
+
 Use Picard to generate the sequence dictionary:
 ```
 picard CreateSequenceDictionary R=Bos_taurus.UMD3.1.dna.toplevel.fa \
  O=Bos_taurus.UMD3.1.dna.toplevel.dict
 ```
 ## 2. Sorting and indexing the bam file
-First sort and index your bam files using samtools. This allows downstream programs to access its contents more quickly.
+Next sort and index your bam files using Samtools. This allows downstream programs to access its contents more quickly.
 ```
 samtools sort cow1.bam > cow1_sorted.bam
 samtools index cow1_sorted.bam
 ```
 ## 3. Mark duplicates
-Use Picard to flag potential duplicate reads.
+As discussed PCR duplicates can cause problems when calling variants. Using Picard we can flag to GATK which reads are potential duplicates.
 ```
 picard MarkDuplicates I=cow1_sorted.bam O=cow1_dupMarked.bam \
  M=cow1_dup_metrics.txt
@@ -54,7 +56,7 @@ samtools index cow1_dupMarked.bam
 ```
 **_Question 1: What proportion of reads were duplicates?_**
 ## 4. Base Quality Score Recalibration (BQSR)
-BQSR requires a set of known variants to filter against. We can download this in VCF format from dbSNP using the wget program. As these bams only contain reads mapping to a region of chromosome 4 we can just download known variants on this chromosome.
+BQSR involves adjusting the base quality scores so that they better represent the probability of errors in the reads. BQSR requires a set of known variants to filter against. We can download this in VCF format from dbSNP using the wget program. As these bams only contain reads mapping to a region of chromosome 4 we can just download known variants on this chromosome.
 ```
 wget ftp://ftp.ncbi.nih.gov/snp/organisms/cow_9913/VCF/vcf_chr_4.vcf.gz*
 ```
@@ -101,7 +103,7 @@ GenomeAnalysisTK -T GenotypeGVCFs \
  -o variants.vcf
 ```
 ##7.	Variant Quality Score Recalibration (VQSR)
-To build the SNP recaibration model run the following command. 
+To build the SNP recalibration model run the following command. 
 ```
 GenomeAnalysisTK \
     -T VariantRecalibrator \
@@ -200,7 +202,7 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 
 # Session 3: Association study with plink
 ## Dataset
-In this session we will use human data from the 1000 genomes dataset. The file we are using contains genotypes for approximately 2500 individuals from 26 different globabl populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
+In this session we will use human data from the 1000 genomes dataset. The file we are using contains genotypes for approximately 2500 individuals from 26 different global populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
 
 Programs required:
 *	Plink (https://www.cog-genomics.org/plink2/)
@@ -232,12 +234,12 @@ With large datasets you often want to prune your variants down to a subset that 
 ```
 plink --bfile plinkFormatted --indep-pairwise 500 50 0.2
 ```
-The first parameter specifies the window size (in KB) within which pruning occurs and the second the step size by which the windows are slided by. The final parameter specifies the level of LD (r squared value) at which pruning is carried out. The lower this value the more stringent the pruning.
+The first parameter specifies the window size (in KB) within which pruning occurs and the second the step size by which the windows are slid by. The final parameter specifies the level of LD (r squared value) at which pruning is carried out. The lower this value the more stringent the pruning.
 This command outputs a list of pruned variants. To generate new binary files just containing these variants type:
 ```
 plink --bfile plinkFormatted --extract plink.prune.in --make-bed --out plinkFormatted_pruned
 ```
-We can then use this pruned dataset with the pca function in plink to get principle components:
+We can then use this pruned dataset with the PCA function in plink to get principal components:
 ```
 plink --bfile plinkFormatted_pruned --pca header
 ```
@@ -262,7 +264,7 @@ To perform a basic case control study in plink:
 ```
 plink --bfile plinkFormatted --assoc fisher
 ```
-We can then plot a manhattan and QQ plot in R:
+We can then plot a Manhattan and Q-Q plot in R:
 ```{r}
 #read in the association results
 dat<-read.table("plink.assoc.fisher", header=T)
@@ -276,7 +278,7 @@ signif<-dat[which(dat$P < 5e-08),]
 points(signif$BP, -log10(signif$P),pch=20, col="red")
 abline(h=7.3, col="red", lty=2)
 
-#plot QQ plot
+#plot Q-Q plot
 #log transform p values and generate expected distribution of p values
 obs <- -log10(sort(dat$P,decreasing=F))
 exp <- -log10(1:length(obs)/length(obs))
@@ -287,10 +289,10 @@ plot(exp,obs,xlab=expression(Expected~~-log[10](italic(p))), ylab=expression(Obs
 lines(exp,exp,col="red")
 dev.off()
 ```
-In the manhattan plot we have log transformed the p values so that small p values now have larger values on the plot i.e. the higher they are the more significant. Those above the p=5x10-8 significance threshold commonly used in GWAS are indicated in red. As can be seen a lot of sites are apparently significant. This though is how not to do a GWAS. As we have shown this data shows substantial population stratification that will likely be confounding these results. When performing GWAS you control for confounders by fitting what can be termed covariates. These are factors that you think may be important to control for when doing your analysis e.g. diet when looking at the genetics of body weight. Common confounders include sex, age, diet etc as well as population stratification.
+In the Manhattan plot we have log transformed the p values so that small p values now have larger values on the plot i.e. the higher they are the more significant. Those above the p=5x10-8 significance threshold commonly used in GWAS are indicated in red. As can be seen a lot of sites are apparently significant. This though is how not to do a GWAS. As we have shown this data shows substantial population stratification that will likely be confounding these results. When performing GWAS you control for confounders by fitting what can be termed covariates. These are factors that you think may be important to control for when doing your analysis e.g. diet when looking at the genetics of body weight. Common confounders include sex, age, diet etc. as well as population stratification.
 
 ##15. Association analysis with covariates
-Plink allows you to fit covariates when doing an association test. For example, to fit the pca results to correct for population stratification we can do:
+Plink allows you to fit covariates when doing an association test. For example, to fit the PCA results to correct for population stratification we can do:
 ```
 plink --bfile plinkFormatted --covar plink.eigenvec --covar-number 1-20 --logistic sex hide-covar
 ```
@@ -303,7 +305,7 @@ We are fitting as covariates the top twenty principal components as well as sex 
 **_Question 12: Have a look at the same page and rerun the standard additive analysis (the code above) but with adjusted p values also outputted. What was the smallest UNADJusted p value and what was its corresponding Benjamini-Hochberg False Discovery Rate (FDR_BH)? What does this mean?_**
 
 ##16. Permutation derived p values
-Permutation derived p values involve randomly shuffling the link between genotypes and phenotypes across samples to see how unusual the observed assocation is. P values derived in this way can be more robust than the nominal p values obtained from the standard tests however they come at the cost of being computationally more expensive to calculate. As an example though we can calculate permutation derived p values across just a small region of the chromosome:
+Permutation derived p values involve randomly shuffling the link between genotypes and phenotypes across samples to see how unusual the observed association is. P values derived in this way can be more robust than the nominal p values obtained from the standard tests however they come at the cost of being computationally more expensive to calculate. As an example though we can calculate permutation derived p values across just a small region of the chromosome:
 ```
 plink --bfile plinkFormatted --covar plink.eigenvec --covar-number 1-20 --logistic sex perm --chr 22 --from-mb 43.05 --to-mb 43.15
 ```
