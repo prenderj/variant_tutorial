@@ -9,6 +9,8 @@
 # Session 1: Variant calling with GATK
 
 ## Dataset
+The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session1*
+
 This session will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files (aligned with BWA), each corresponding to a different cow. These contain reads mapping to an approximately 4Mb region centred on the cow Leptin gene on chromosome 4 (you can view the region here: http://www.ensembl.org/Bos_taurus/Location/Overview?r=4%3A91249874-95266624).
 
 Programs required:
@@ -202,6 +204,8 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 
 # Session 3: Association study with plink
 ## Dataset
+The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session3*
+
 In this session we will use human data from the 1000 genomes dataset in a simulated GWAS analysis. The file we are using contains genotypes for approximately 2500 individuals from 26 different global populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
 
 Programs required:
