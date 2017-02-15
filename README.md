@@ -9,9 +9,15 @@
 # Session 1: Variant calling with GATK
 
 ## Dataset
-The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session1*
+After starting the interactive session the data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session1*. 
 
-This session will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files (aligned with BWA), each corresponding to a different cow. These contain reads mapping to an approximately 4Mb region centred on the cow Leptin gene on chromosome 4 (you can view the region here: http://www.ensembl.org/Bos_taurus/Location/Overview?r=4%3A91249874-95266624).
+```
+interactive
+cp -R /export/data/ilri/bioinformatics/workshop_dnaseq/Session1/ ~/
+cd ~/Session1
+```
+
+This session will take you through the process of calling variants with GATK using cattle whole genome sequencing data. There are 2 bam files in the Session1 folder you just copied (aligned with BWA), each corresponding to a different cow. These contain reads mapping to an approximately 4Mb region centred on the cow Leptin gene on chromosome 4 (you can view the region here: http://www.ensembl.org/Bos_taurus/Location/Overview?r=4%3A91249874-95266624).
 
 Programs required:
 *	R (https://cran.r-project.org/)
@@ -205,7 +211,9 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 # Session 3: Association study with plink
 ## Dataset
 The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session3*
-
+```
+cp -R /export/data/ilri/bioinformatics/workshop_dnaseq/Session3/ ~/
+```
 In this session we will use human data from the 1000 genomes dataset in a simulated GWAS analysis. The file we are using contains genotypes for approximately 2500 individuals from 26 different global populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
 
 Programs required:
@@ -249,6 +257,12 @@ We can then use this pruned dataset with the PCA function in plink to get princi
 plink --bfile plinkFormatted_pruned --pca header
 ```
 We can examine the PCA results in R. For example we can plot the first two principal components using the following R code (the British samples are in rows 1 to 91 and the Kenyan samples in rows 92 to 190)
+
+First start R:
+```
+R
+```
+Then run the following R code
 ```{r}
 #read in the plink PCA results
 dat<-read.table("plink.eigenvec", header=T)
@@ -263,6 +277,8 @@ legend("topright", c("British", "Kenyan"), col=c("blue", "red"), pch=1)
 dev.off()
 ```
 This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (found in columns 3 and 4), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together. However, in this tutorial we will carry on with both populations.
+
+To quite R you can just type 'q()'.
 
 ##14. Basic association analysis
 To perform a basic case control study in plink:
