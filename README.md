@@ -14,8 +14,9 @@ After starting the interactive session the data you need for this session can be
 ```
 interactive -c 4
 ```
-
+We first go to the home directory, then copy the required data and move to this new directory
 ```
+cd
 cp -R /export/data/ilri/bioinformatics/workshop_dnaseq/Session1/ ~/
 cd ~/Session1
 ```
