@@ -12,7 +12,10 @@
 After starting the interactive session the data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session1*. 
 
 ```
-interactive
+interactive -c 4
+```
+
+```
 cp -R /export/data/ilri/bioinformatics/workshop_dnaseq/Session1/ ~/
 cd ~/Session1
 ```
