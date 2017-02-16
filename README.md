@@ -217,6 +217,7 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session3*
 ```
 cp -R /export/data/ilri/bioinformatics/workshop_dnaseq/Session3/ ~/
+cd ~/Session3/
 ```
 In this session we will use human data from the 1000 genomes dataset in a simulated GWAS analysis. The file we are using contains genotypes for approximately 2500 individuals from 26 different global populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
 
@@ -281,14 +282,17 @@ legend("topright", c("British", "Kenyan"), col=c("blue", "red"), pch=1)
 ```
 This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (found in columns 3 and 4), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together. However, in this tutorial we will carry on with both populations.
 
-To quite R you can just type 'q()'.
+To quite R you can just type:
+```
+q()
+```
 
 ##14. Basic association analysis
 To perform a basic case control study in plink:
 ```
 plink --bfile plinkFormatted --assoc fisher
 ```
-We can then plot a Manhattan and Q-Q plot in R:
+We can then plot a Manhattan and Q-Q plot in **R**:
 ```{r}
 #read in the association results
 dat<-read.table("plink.assoc.fisher", header=T)
