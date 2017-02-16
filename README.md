@@ -91,7 +91,7 @@ GenomeAnalysisTK -T PrintReads \
  -o cow1_recal.bam
 ```
 ## 5. Single sample GVCF calling
-As this bam file only contains reads mapped to a small region of the cow genome, to speed things up we are going to restrict variant calling to just this region. To do this we first need to make a target file, defining the region of interest. Using a text editor (e.g. nano) create a new file, targetRegions.bed, containing the coordinates of the region as three tab separated columns. Chromosome, start position, and end coordinate i.e.:
+As this bam file only contains reads mapped to a small region of the cow genome, to speed things up we are going to restrict variant calling to just this region. To do this we first need to make a target file, defining the region of interest. Using a text editor (e.g. nano) create a new file, targetRegion.bed, containing the coordinates of the region as three tab separated columns. Chromosome, start position, and end coordinate i.e.:
 
 4 91249874  95266624 
 
@@ -195,7 +195,7 @@ This returns the consequence of a change to an A allele at position 4:94947404 i
 VEP comes with an accompanying script that can be used to filter for specific types of variants. For example, it is possible to use the filter_vep.pl script to just extract the missense variants from the VEP annotated file.
 ```
 filter_vep.pl -I variants_VEP.vcf -format vcf -o missense_only.vcf \
- -filter “Consequence matches missense”
+ -filter "Consequence matches missense"
 ```
 **_Question 6: Get a count of the number of coding variants in the RBM28 gene (hint take a look here http://www.ensembl.org/info/docs/tools/vep/script/vep_filter.html)_**
 
