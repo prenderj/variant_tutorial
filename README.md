@@ -266,15 +266,14 @@ Then run the following R code
 ```{r}
 #read in the plink PCA results
 dat<-read.table("plink.eigenvec", header=T)
-#open a pdf file to output graph to
-pdf("pca.pdf")
+
 #create an empty plot
 plot(dat[,3], dat[,4], xlab="Principal component 1", ylab="Principal component 2", type="n")
 #plot the two populations separately and add a legend
 points(dat[1:91,3], dat[1:91,4],col="blue")
 points(dat[92:190,3], dat[92:190,4],col="red")
 legend("topright", c("British", "Kenyan"), col=c("blue", "red"), pch=1)
-dev.off()
+
 ```
 This code reads in the eigenvec file produced by plink and plots the first two principal components against each other (found in columns 3 and 4), colouring samples by their country of origin. If you look at the plot you can see two main clusters, with individuals separating by country of origin. If the incidence of the phenotype differs between samples this will cause problems, and variants will be associated to the phenotype due to population differences in the variant frequencies rather than real associations between the genetic locus and the disease. This is an extreme example as GWAS would rarely be performed on such genetically divergent populations together. However, in this tutorial we will carry on with both populations.
 
@@ -290,8 +289,7 @@ We can then plot a Manhattan and Q-Q plot in R:
 #read in the association results
 dat<-read.table("plink.assoc.fisher", header=T)
 #open pdf to write graphs to
-pdf("manhattan1.pdf")
-#plot log transformed p values along the chromosome (manhattan plot)
+
 plot(dat$BP, -log10(dat$P), pch=20, col="grey" , xlab="Position on chr22", ylab=expression(-log[10](italic(p))))
 #extract just those rows where p value was less than standard threshold
 signif<-dat[which(dat$P < 5e-08),]
@@ -308,7 +306,7 @@ plot(exp,obs,xlab=expression(Expected~~-log[10](italic(p))), ylab=expression(Obs
 	xlim=c(0,max(c(obs,exp))),ylim=c(0,max(c(obs,exp))))
 #add y=x line
 lines(exp,exp,col="red")
-dev.off()
+
 ```
 In the Manhattan plot we have log transformed the p values so that small p values now have larger values on the plot i.e. the higher they are the more significant. Those above the p=5x10-8 significance threshold commonly used in GWAS are indicated in red. As can be seen a lot of sites are apparently significant. This though is how not to do a GWAS. As we have shown this data shows substantial population stratification that will likely be confounding these results. When performing GWAS you control for confounders by fitting what can be termed covariates. These are factors that you think may be important to control for when doing your analysis e.g. diet when looking at the genetics of body weight. Common confounders include sex, age, diet etc. as well as population stratification.
 
