@@ -9,7 +9,7 @@
 # Session 1: Variant calling with GATK
 
 ## Dataset
-The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session1*. 
+The data you need for this session can be copied from */home/james/Workshop_data/Data/Session1/*. 
 
 We first go to the home directory, then copy the required data and move to this new directory
 ```
@@ -25,13 +25,15 @@ Programs required:
 *	Samtools (http://www.htslib.org/doc/samtools.html)
 * Picard (https://broadinstitute.github.io/picard/)
 *	GATK (https://software.broadinstitute.org/gatk/)
+*	VCFtools (https://vcftools.github.io/index.html)
 
-These are already installed on the ILRI cluster. To make them available type:
+These are already installed on the cluster you are using. To make them available type:
 ```
 module load samtools/1.4
 module load picard/2.9.0
 module load gatk/3.7.0
 module load R/3.3.3
+module load vcftools/0.1.14
 ```
 
 ## 1. Preparing the reference genome for use with GATK
@@ -65,24 +67,23 @@ samtools index cow1_dupMarked.bam
 ```
 **_Question 1: What proportion of reads were duplicates?_**
 ## 4. Base Quality Score Recalibration (BQSR)
-BQSR involves adjusting the base quality scores so that they more accurately represent the probability of errors in the reads. BQSR requires a set of known variants so that it can filter these out. We can download this in VCF format from dbSNP using the wget program. As these bams only contain reads mapping to a region of chromosome 4 we can just download known variants on this chromosome.
+BQSR involves adjusting the base quality scores so that they more accurately represent the probability of errors in the reads. BQSR requires a set of known variants so that it can filter these out. For this we are going to use the variants from this study https://www.ncbi.nlm.nih.gov/bioproject/262770. To save having to download these the set of variants from this project can already be found in the Session1 folder (UGBT.population_sites.UMD3_1.20140307.vcf.gz). As the bams we are working with only contain reads mapping to a region of chromosome 4 we can first extract just the variants on chromosome 4 from this larger file using vcftools.
 ```
-wget ftp://ftp.ncbi.nih.gov/snp/organisms/cow_9913/VCF/vcf_chr_4.vcf.gz*
+vcftools --gzvcf UGBT.population_sites.UMD3_1.20140307.vcf.gz --chr 4 --recode \
+ --out UGBT.population_sites.UMD3_1.20140307.chr4.recode.vcf
 ```
-As this file is compressed we need to uncompress it first
-```
-gunzip vcf_chr_4.vcf.gz
-```
+Can see we specified four arguments. Have a look here https://vcftools.github.io/man_latest.html to see what each of these arguments mean.
+
 We can then use this file of known sites in BQSR.
 ```
-GenomeAnalysisTK -T BaseRecalibrator \
+gatk -T BaseRecalibrator \
  -R Bos_taurus.UMD3.1.dna.toplevel.fa \
- -I cow1_dupMarked.bam -knownSites vcf_chr_4.vcf \
+ -I cow1_dupMarked.bam -knownSites UGBT.population_sites.UMD3_1.20140307.chr4.recode.vcf \
  -o cow1_recal_data.table
 ```
 And apply recalibration
 ```
-GenomeAnalysisTK -T PrintReads \
+gatk -T PrintReads \
  -R Bos_taurus.UMD3.1.dna.toplevel.fa \
  -I cow1_dupMarked.bam -BQSR cow1_recal_data.table \
  -o cow1_recal.bam
