@@ -166,14 +166,14 @@ Programs required:
 
 These are already installed on the cluster. To make them available type:
 ```
-module load vep/87
+module load vep/90.6
 module load vcftools/0.1.14
 ```
 ##8.	Variant annotation with VEP
-VEP (variant effect predictor) is a commonly used tool to annotate genetic variants. To speed up annotation we will run VEP specifying the location of a VEP local cache that has been installed on the ILRI cluster at /export/data/bio/vep/. This contains information on the location of genes etc. that Ensembl uses to annotate the variants, and means that VEP doesnt need to connect to the Ensembl servers to get this information. By specifying the --merged flag we can get annotations for both Ensembl and RefSeq genes.
+VEP (variant effect predictor) is a commonly used tool to annotate genetic variants. To speed up annotation we will run VEP specifying the location of a VEP local cache (https://www.ensembl.org/info/docs/tools/vep/script/vep_cache.html) that has been downloaded onto the ILRI cluster at /home/james/Workshop_data/vep/. This contains information on the location of genes etc. that Ensembl uses to annotate the variants, and means that VEP doesnt need to connect to the Ensembl servers to get this information. By specifying the --merged flag we can get annotations for both Ensembl and RefSeq genes.
 ```
-variant_effect_predictor.pl --cache \
- --dir_cache /export/data/bio/vep/ --species bos_taurus \
+vep --cache \
+ --dir_cache /home/james/Workshop_data/vep/ --species bos_taurus \
  --vcf -i variants_VQSR.vcf -o variants_VEP.vcf --merged
 ```
 Have a look at the html output file.
@@ -192,7 +192,7 @@ This returns the consequence of a change to an A allele at position 4:94947404 i
 ##9. Variant filtering with VEP
 VEP comes with an accompanying script that can be used to filter for specific types of variants. For example, it is possible to use the filter_vep.pl script to just extract the missense variants from the VEP annotated file.
 ```
-filter_vep.pl -I variants_VEP.vcf -format vcf -o missense_only.vcf \
+filter_vep -I variants_VEP.vcf -format vcf -o missense_only.vcf \
  -filter "Consequence matches missense"
 ```
 **_Question 6: Get a count of the number of coding variants in the RBM28 gene (hint take a look here http://www.ensembl.org/info/docs/tools/vep/script/vep_filter.html)_**
@@ -212,9 +212,9 @@ vcftools --vcf variants_VEP.vcf --TsTv-summary --out TsTv
 
 # Session 3: Association study with plink
 ## Dataset
-The data you need for this session can be copied from */export/data/ilri/bioinformatics/workshop_dnaseq/Session3*
+The data you need for this session can be copied from */home/james/Workshop_data/Data/Session3*
 ```
-cp -R /export/data/ilri/bioinformatics/workshop_dnaseq/Session3/ ~/
+cp -R /home/james/Workshop_data/Data/Session3/ ~/
 cd ~/Session3/
 ```
 In this session we will use human data from the 1000 genomes dataset in a simulated GWAS analysis. The file we are using contains genotypes for approximately 2500 individuals from 26 different global populations. The file was originally downloaded from the 1000 genomes ftp site here (ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/)
@@ -226,14 +226,14 @@ Programs required:
 To load them type:
 ```
 module load plink/1.9
-module load R/3.3.2
+module load R/3.3.3
 ```
 ##11. Converting VCF to plinks binary format
 Although PLINK can read VCF files, downstream analyses will be quicker if we first convert the data to plink's binary file format. For this tutorial we will also restrict the analysis to just British and Kenyan (Luhya in Webuye) individuals in this cohort and variants with a minor allele frequency of at least 5%. We also exclude genotypes with a quality score less than 40 to make sure low quality genotypes do not affect our analyses.
 ```
 plink --biallelic-only strict --vcf-min-gq 40 --pheno 1kg.ped --mpheno 4 --vcf ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz --keep GBR_LWK_ids.txt --maf 0.05 --make-bed --out plinkFormatted --update-sex 1kg.ped 3
 ```
-PLINK requires a ped file containing each samples phenotype individual. Have a look at the 1kg.ped file. The first two columns are the family and individual ids. As these individuals are all unrelated we just use their individual id as their family id. 
+PLINK requires a ped file containing each samples phenotype. Have a look at the 1kg.ped file. The first two columns are the family and individual ids. As these individuals are all unrelated we just use their individual id as their family id. 
 To specify the individuals to keep we just provide a list of ids in the GBR_LWK_ids.txt file.
 
 ##12. Summary statistics with PLINK 
