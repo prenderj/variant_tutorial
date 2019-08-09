@@ -34,7 +34,7 @@ These are already installed on the ILRI cluster. To make them available type:
 module load samtools/1.3.1
 module load picard/2.8.2
 module load gatk/3.7.0
-module load R/3.3.2
+module load R/3.6
 ```
 
 ## 1. Preparing the reference genome for use with GATK
