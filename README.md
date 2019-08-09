@@ -233,7 +233,7 @@ Programs required:
 To load them type:
 ```
 module load plink/1.9
-module load R/3.3.2
+module load R/3.6
 ```
 ##11. Converting VCF to plinks binary format
 Although PLINK can read VCF files, downstream analyses will be quicker if we first convert the data to plink's binary file format. For this tutorial we will also restrict the analysis to just British and Kenyan (Luhya in Webuye) individuals in this cohort and variants with a minor allele frequency of at least 5%. We also exclude genotypes with a quality score less than 40 to make sure low quality genotypes do not affect our analyses.
