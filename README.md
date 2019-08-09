@@ -28,6 +28,7 @@ Programs required:
 *	Samtools (http://www.htslib.org/doc/samtools.html)
 * Picard (https://broadinstitute.github.io/picard/)
 *	GATK (https://software.broadinstitute.org/gatk/)
+*	VCFtools (https://vcftools.github.io/index.html)
 
 These are already installed on the ILRI cluster. To make them available type:
 ```
@@ -35,6 +36,7 @@ module load samtools/1.3.1
 module load picard/2.8.2
 module load gatk/3.7.0
 module load R/3.6
+module load vcftools/0.1.15
 ```
 
 ## 1. Preparing the reference genome for use with GATK
@@ -68,19 +70,22 @@ samtools index cow1_dupMarked.bam
 ```
 **_Question 1: What proportion of reads were duplicates?_**
 ## 4. Base Quality Score Recalibration (BQSR)
-BQSR involves adjusting the base quality scores so that they more accurately represent the probability of errors in the reads. BQSR requires a set of known variants so that it can filter these out. We can download this in VCF format from dbSNP using the wget program. As these bams only contain reads mapping to a region of chromosome 4 we can just download known variants on this chromosome.
+BQSR involves adjusting the base quality scores so that they more accurately represent the probability of errors in the reads.  BQSR requires a set of known variants so that it can filter these out. For this we are going to use the variants from this study https://www.ncbi.nlm.nih.gov/bioproject/262770. We can download this in VCF format using the wget program. As these bams only contain reads mapping to a region of chromosome 4 we can just download known variants on this chromosome.
 ```
-wget ftp://ftp.ncbi.nih.gov/snp/organisms/cow_9913/VCF/vcf_chr_4.vcf.gz*
+wget ftp://ftp.ebi.ac.uk/pub/databases/nextgen/bos/variants/population_sites/UGBT.population_sites.UMD3_1.20140307.vcf.gz
 ```
-As this file is compressed we need to uncompress it first
+As the bams we are working with only contain reads mapping to a region of chromosome 4 we can first extract just the variants on chromosome 4 from this larger file using vcftools.
 ```
-gunzip vcf_chr_4.vcf.gz
+vcftools --gzvcf UGBT.population_sites.UMD3_1.20140307.vcf.gz --chr 4 --recode \
+ --out UGBT.population_sites.UMD3_1.20140307.chr4
 ```
+Can see we specified four arguments. Have a look here https://vcftools.github.io/man_latest.html to see what each of these arguments mean.
+
 We can then use this file of known sites in BQSR.
 ```
 GenomeAnalysisTK -T BaseRecalibrator \
  -R Bos_taurus.UMD3.1.dna.toplevel.fa \
- -I cow1_dupMarked.bam -knownSites vcf_chr_4.vcf \
+ -I cow1_dupMarked.bam -knownSites UGBT.population_sites.UMD3_1.20140307.chr4.recode.vcf \
  -o cow1_recal_data.table
 ```
 And apply recalibration
@@ -100,7 +105,7 @@ We can then use this targetRegion.bed with the –L flag to restrict calling to 
 GenomeAnalysisTK -T HaplotypeCaller \
  -R Bos_taurus.UMD3.1.dna.toplevel.fa \
  -L targetRegion.bed -I cow1_recal.bam \
- --emitRefConfidence GVCF --dbsnp vcf_chr_4.vcf \
+ --emitRefConfidence GVCF --dbsnp UGBT.population_sites.UMD3_1.20140307.chr4.recode.vcf \
  -o cow1.g.vcf
 ```
 **IMPORTANT. The steps 2-5 above would normally be run for each of your samples to generate one g.vcf file per sample. However to save time we have prepared the g.vcf file for the remaining sample for use with the next step.**
@@ -122,7 +127,7 @@ GenomeAnalysisTK \
     -R Bos_taurus.UMD3.1.dna.toplevel.fa \
     -input variants.vcf \
     -resource:bov1000G,known=false,training=true,truth=true,prior=12.0 bov1000G.vcf \
-    -resource:dbsnp,known=true,training=false,truth=false,prior=2.0 vcf_chr_4.vcf \
+    -resource:dbsnp,known=true,training=false,truth=false,prior=2.0 UGBT.population_sites.UMD3_1.20140307.chr4.recode.vcf \
     -an DP \
     -an QD \
     -an FS \
