@@ -173,8 +173,8 @@ Programs required:
 
 These are already installed on the cluster. To make them available type:
 ```
-module load vep/87
-module load vcftools/0.1.14
+module load vep/92.1
+module load vcftools/0.1.15
 ```
 ##8.	Variant annotation with VEP
 VEP (variant effect predictor) is a commonly used tool to annotate genetic variants. To speed up annotation we will run VEP specifying the location of a VEP local cache that has been installed on the ILRI cluster at /export/data/bio/vep/. This contains information on the location of genes etc. that Ensembl uses to annotate the variants, and means that VEP doesnt need to connect to the Ensembl servers to get this information. By specifying the --merged flag we can get annotations for both Ensembl and RefSeq genes.
