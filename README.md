@@ -179,9 +179,9 @@ module load vcftools/0.1.15
 ##8.	Variant annotation with VEP
 VEP (variant effect predictor) is a commonly used tool to annotate genetic variants. To speed up annotation we will run VEP specifying the location of a VEP local cache that has been installed on the ILRI cluster at /export/data/bio/vep/. This contains information on the location of genes etc. that Ensembl uses to annotate the variants, and means that VEP doesnt need to connect to the Ensembl servers to get this information. By specifying the --merged flag we can get annotations for both Ensembl and RefSeq genes.
 ```
-variant_effect_predictor.pl --cache \
+vep --cache /export/apps/vep/92.1/cache \
  --dir_cache /export/data/bio/vep/ --species bos_taurus \
- --vcf -i variants_VQSR.vcf -o variants_VEP.vcf --merged
+ --vcf -i variants_VQSR.vcf -o variants_VEP.vcf --merged --force_overwrite
 ```
 Have a look at the html output file.
 
@@ -199,8 +199,8 @@ This returns the consequence of a change to an A allele at position 4:94947404 i
 ##9. Variant filtering with VEP
 VEP comes with an accompanying script that can be used to filter for specific types of variants. For example, it is possible to use the filter_vep.pl script to just extract the missense variants from the VEP annotated file.
 ```
-filter_vep.pl -I variants_VEP.vcf -format vcf -o missense_only.vcf \
- -filter "Consequence matches missense"
+filter_vep -I variants_VEP.vcf -format vcf -o missense_only.vcf \
+ -filter "Consequence matches missense" --force_overwrite
 ```
 **_Question 6: Get a count of the number of coding variants in the RBM28 gene (hint take a look here http://www.ensembl.org/info/docs/tools/vep/script/vep_filter.html)_**
 
