@@ -1,3 +1,5 @@
+**The slides accompanying this tutorial can be found [here](https://www.dropbox.com/s/h3ei459dmfw99g7/ILRI_bioinf_course_2019.pptx)**
+
 # Table of contents
 
 [Session 1: Variant calling with GATK](https://github.com/prenderj/variant_tutorial#session-1-variant-calling-with-gatk)
